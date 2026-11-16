@@ -39,7 +39,7 @@
 - `src/lib/transactions/filters.ts`: filtros (mês/ano, categoria, busca) como função pura.
 - `src/lib/transactions/csv.ts`: geração de CSV com escape.
 - `src/lib/supabase/server.ts`, `src/lib/supabase/client.ts`, `src/lib/supabase/middleware.ts`: clientes Supabase.
-- `src/middleware.ts`: proteção de rotas.
+- `src/proxy.ts`: proteção de rotas (Next 16 chama middleware de proxy).
 - `src/app/actions/auth.ts`: Server Actions de login, cadastro e logout.
 - `src/app/actions/transactions.ts`: Server Actions de criar, editar, excluir.
 - `src/app/page.tsx`: landing page.
