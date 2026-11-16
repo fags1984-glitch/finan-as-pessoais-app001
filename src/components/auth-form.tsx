@@ -5,7 +5,6 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import type { AuthState } from "@/app/actions/auth";
 
 type Props = {
@@ -20,39 +19,46 @@ export function AuthForm({ title, description, submitLabel, action, footer }: Pr
   const [state, formAction, pending] = useActionState<AuthState, FormData>(action, undefined);
 
   return (
-    <Card className="w-full max-w-sm">
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
-      </CardHeader>
-      <form action={formAction}>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">E-mail</Label>
-            <Input id="email" name="email" type="email" autoComplete="email" required />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Senha</Label>
-            <Input id="password" name="password" type="password" autoComplete="current-password" required />
-          </div>
-          {state?.error && (
-            <p role="alert" className="text-sm text-red-600">
-              {state.error}
-            </p>
-          )}
-        </CardContent>
-        <CardFooter className="flex flex-col gap-3">
-          <Button type="submit" className="w-full" disabled={pending}>
-            {pending ? "Aguarde..." : submitLabel}
-          </Button>
-          <p className="text-sm text-muted-foreground">
-            {footer.text}{" "}
-            <Link href={footer.href} className="font-medium text-primary underline-offset-4 hover:underline">
-              {footer.linkLabel}
-            </Link>
+    <div className="w-full max-w-sm">
+      <div className="mb-8">
+        <h1 className="font-heading text-3xl font-semibold tracking-tight">{title}</h1>
+        <p className="mt-2 text-sm text-muted-foreground">{description}</p>
+      </div>
+
+      <form action={formAction} className="space-y-5">
+        <div className="space-y-2">
+          <Label htmlFor="email">E-mail</Label>
+          <Input id="email" name="email" type="email" autoComplete="email" required className="h-11 rounded-lg bg-card" />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="password">Senha</Label>
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            autoComplete={submitLabel === "Entrar" ? "current-password" : "new-password"}
+            required
+            className="h-11 rounded-lg bg-card"
+          />
+        </div>
+
+        {state?.error && (
+          <p role="alert" className="rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
+            {state.error}
           </p>
-        </CardFooter>
+        )}
+
+        <Button type="submit" className="h-11 w-full rounded-lg text-sm" disabled={pending}>
+          {pending ? "Aguarde..." : submitLabel}
+        </Button>
       </form>
-    </Card>
+
+      <p className="mt-6 text-center text-sm text-muted-foreground">
+        {footer.text}{" "}
+        <Link href={footer.href} className="font-semibold text-primary underline-offset-4 hover:underline">
+          {footer.linkLabel}
+        </Link>
+      </p>
+    </div>
   );
 }

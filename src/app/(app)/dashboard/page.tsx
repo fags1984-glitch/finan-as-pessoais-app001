@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { connection } from "next/server";
 import { CategoryPieChart } from "@/components/category-pie-chart";
 import { PeriodSelect } from "@/components/period-select";
 import { SummaryCards } from "@/components/summary-cards";
@@ -26,6 +26,7 @@ export default function DashboardPage({ searchParams }: PageProps) {
 
 async function DashboardContent({ searchParams }: PageProps) {
   const raw = await searchParams;
+  await connection();
   const now = new Date();
   const monthParam = Number(pick(raw.month));
   const yearParam = Number(pick(raw.year));
@@ -43,48 +44,46 @@ async function DashboardContent({ searchParams }: PageProps) {
   const recent = txs.slice(0, 5);
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
+    <div className="space-y-8">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <h1 className="font-heading text-3xl font-semibold tracking-tight">Dashboard</h1>
         <PeriodSelect years={years} year={year} month={month} />
       </div>
 
       <SummaryCards summary={summary} />
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Despesas por categoria</CardTitle>
-          </CardHeader>
-          <CardContent>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
+        <section className="rounded-2xl bg-card p-6 ring-1 ring-border lg:col-span-3">
+          <h2 className="font-heading text-base font-semibold">Despesas por categoria</h2>
+          <div className="mt-4">
             <CategoryPieChart data={categories} />
-          </CardContent>
-        </Card>
+          </div>
+        </section>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Últimas transações</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {recent.length === 0 ? (
-              <p className="py-12 text-center text-sm text-muted-foreground">Nenhuma transação neste período</p>
-            ) : (
-              <ul className="divide-y">
-                {recent.map((tx) => (
-                  <li key={tx.id} className="flex items-center justify-between gap-3 py-2 text-sm">
-                    <div className="min-w-0">
-                      <p className="truncate font-medium">{tx.description}</p>
-                      <p className="text-xs text-muted-foreground">{tx.category}</p>
-                    </div>
-                    <span className={tx.type === "receita" ? "font-semibold text-emerald-600" : "font-semibold text-red-600"}>
-                      {tx.type === "receita" ? "+" : "−"} {formatBRL(tx.amount)}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </CardContent>
-        </Card>
+        <section className="rounded-2xl bg-card p-6 ring-1 ring-border lg:col-span-2">
+          <h2 className="font-heading text-base font-semibold">Últimas transações</h2>
+          {recent.length === 0 ? (
+            <p className="py-12 text-center text-sm text-muted-foreground">Nenhuma transação neste período</p>
+          ) : (
+            <ul className="mt-2 divide-y">
+              {recent.map((tx) => (
+                <li key={tx.id} className="flex items-center justify-between gap-3 py-3 text-sm">
+                  <div className="min-w-0">
+                    <p className="truncate font-medium">{tx.description}</p>
+                    <p className="text-xs text-muted-foreground">{tx.category}</p>
+                  </div>
+                  <span
+                    className={`shrink-0 font-semibold tabular ${
+                      tx.type === "receita" ? "text-income" : "text-expense"
+                    }`}
+                  >
+                    {tx.type === "receita" ? "+" : "−"} {formatBRL(tx.amount)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
       </div>
     </div>
   );

@@ -7,6 +7,7 @@ import { TransactionList } from "@/components/transaction-list";
 import { listTransactions } from "@/lib/transactions/queries";
 import { filterTransactions } from "@/lib/transactions/filters";
 import { filtersToSearchParams, parseFilters } from "@/lib/transactions/params";
+import { connection } from "next/server";
 
 type PageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -22,6 +23,7 @@ export default function TransacoesPage({ searchParams }: PageProps) {
 
 async function TransacoesContent({ searchParams }: PageProps) {
   const filters = parseFilters(await searchParams);
+  await connection();
   const all = await listTransactions();
   const txs = filterTransactions(all, filters);
 
@@ -34,9 +36,13 @@ async function TransacoesContent({ searchParams }: PageProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-semibold tracking-tight">Transações</h1>
-        <Button variant="outline" render={<Link href={`/transacoes/export${exportQuery ? `?${exportQuery}` : ""}`} />}>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <h1 className="font-heading text-3xl font-semibold tracking-tight">Transações</h1>
+        <Button
+          variant="outline"
+          nativeButton={false}
+          render={<Link href={`/transacoes/export${exportQuery ? `?${exportQuery}` : ""}`} />}
+        >
           <Download className="size-4" />
           Exportar CSV
         </Button>

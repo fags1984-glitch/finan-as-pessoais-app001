@@ -5,8 +5,8 @@ import { formatBRL } from "@/lib/format";
 import type { Category } from "@/lib/categories";
 
 const COLORS = [
-  "#2563eb", "#059669", "#d97706", "#dc2626", "#7c3aed",
-  "#0891b2", "#65a30d", "#db2777", "#64748b",
+  "#0b5d4f", "#13805a", "#e09f3e", "#c4502a", "#4f6d8a",
+  "#7fb89e", "#8a7bb0", "#b8a48a", "#94a39d",
 ];
 
 type Props = { data: { category: Category; total: number }[] };

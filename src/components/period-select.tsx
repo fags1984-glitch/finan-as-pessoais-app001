@@ -21,7 +21,8 @@ export function PeriodSelect({ years, year, month }: Props) {
     router.replace(`${pathname}?${params.toString()}`);
   }
 
-  const selectClass = "h-9 rounded-md border bg-background px-3 text-sm";
+  const selectClass =
+    "h-10 rounded-lg border border-input bg-card px-3 text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/30";
 
   return (
     <div className="flex gap-2">
